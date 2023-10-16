@@ -6,6 +6,15 @@ global:
   # external systems (federation, remote storage, Alertmanager).
   external_labels:
     monitor: 'dna-monitor'
+    server_name: prometheus01 # Имя сервера для отображения в VM
+
+#Удаленная отправка метрик на Victoria
+remote_write:
+  - url: http://192.168.1.101:8428/api/v1/write
+    queue_config:
+      max_samples_per_send: 10000
+      capacity: 20000
+      max_shards: 30
 
 rule_files:
   - '/etc/prometheus/alert.rules'
@@ -20,6 +29,6 @@ scrape_configs:
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['localhost:9090','192.168.1.101:8428']
         labels:
           group: 'self-monitor'

@@ -39,3 +39,10 @@ nano /opt/GAP-1/[prometheus.yml](https://github.com/CTPAyCCC/GAP-1/blob/main/pro
       max_shards: 30</code></pre>
 
 <pre><code>docker restart prometheus</code></pre>
+
+# Grafana
+<pre><code>docker run -d -p 3000:3000 \
+-e GF_INSTALL_PLUGINS=grafana-clock-panel,natel-discrete-panel,grafana-piechart-panel \
+--name=grafana \
+grafana/grafana-enterprise</code></pre>
+

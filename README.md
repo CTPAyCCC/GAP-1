@@ -16,7 +16,7 @@ nano /opt/GAP-1/[prometheus.yml](https://github.com/CTPAyCCC/GAP-1/blob/main/pro
     -p 9090:9090 \
     -v /opt/GAP-1/prometheus.yml:/etc/prometheus/prometheus.yml \
     -v prometheus-data:/prometheus \
-    --name prometeus
+    --name prometeus \
     prom/prometheus</code></pre>
     
 

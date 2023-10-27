@@ -14,7 +14,8 @@ nano /opt/GAP-1/[prometheus.yml](https://github.com/CTPAyCCC/GAP-1/blob/main/pro
 # Start Prometheus container
 <pre><code>docker run -d\
     -p 9090:9090 \
-    -v /opt/GAP-1/prometheus.yml:/etc/prometheus/prometheus.yml \
+    -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+    -v /etc/prometheus/alert.rule:/etc/prometheus/alert.rule \
     -v prometheus-data:/prometheus \
     --name prometeus \
     prom/prometheus</code></pre>

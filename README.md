@@ -49,10 +49,10 @@ grafana/grafana-enterprise</code></pre>
 
 # Alertmanager (*--volume поменять на свой путь)
 nano /opt/GAP-1/[alertmanager.yml](https://github.com/CTPAyCCC/GAP-1/blob/main/alermanager.yml)
-<pre><code>  docker run \
+<pre><code>docker run \
 --detach \
 --name=alertmanager \
---volume=/etc/prometheus/alertmanager.yml:/etc/alertmanager/rules.yml \
+--volume=/etc/prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml \
 --publish=9093:9093 \
 prom/alertmanager
 </code></pre>

@@ -51,7 +51,7 @@ grafana/grafana-enterprise</code></pre>
   docker run \
 --detach \
 --name=alertmanager \
---volume=/etc/prometheus/rules.yml:/etc/alertmanager/rules.yml \
+--volume=/etc/prometheus/alertmanager.yml:/etc/alertmanager/rules.yml \
 --publish=9093:9093 \
 prom/alertmanager
 </code></pre>

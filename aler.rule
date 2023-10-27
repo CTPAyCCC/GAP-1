@@ -14,3 +14,22 @@ groups:
       #annotations:
       #  summary: Instance {{ $labels.instance }} down
       #  description: {{ $labels.instance }} of job {{ $labels.job }} has been down for more thans 5 minutes.
+
+- name: Тестовый счетчик получил значение 0
+  rules:
+  - alert: Значение тестового счетчика равно 0.
+    expr: randome_value == 0
+    for: 5s
+    labels:
+      severity: page
+
+
+- name: Тестовый счетчик получил значение больше 10
+  rules:
+  - alert: Значение тестовго счетчика больше либо равно 10.
+    expr: randome_value >= 10
+    for: 5s
+    labels:
+      severity: critical
+    annotations:
+      summary: Значение тестовго счетчика больше либо равно 10.

@@ -1,0 +1,114 @@
+
+## prometheus.yml
+
+global:
+  scrape_interval: 20s
+
+  # A short evaluation_interval will check alerting rules very often.
+  # It can be costly if you run Prometheus with 100+ alerts.
+  evaluation_interval: 20s
+  ...
+
+rule_files:
+  - 'alerts/*.yml'
+
+  
+
+
+  
+## alert_prometheus.yml
+
+groups:
+  - name: example
+rules:
+    - alert: PrometheusJobMissing
+      expr: absent(up{job="prometheus"})
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: Prometheus job missing (instance {{ $labels.instance }})
+        description: "A Prometheus job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: NodeJobMissing
+      expr: absent(up{job="node"})
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: Prometheus job missing (instance {{ $labels.instance }})
+        description: "A Prometheus job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+
+
+
+
+
+## alertmanager.yml
+
+route:
+  # When a new group of alerts is created by an incoming alert, wait at
+  # least 'group_wait' to send the initial notification.
+  # This way ensures that you get multiple alerts for the same group that start
+  # firing shortly after another are batched together on the first
+  # notification.
+  group_by: ['alertname', 'cluster', 'job', 'env']
+  group_wait: 10s
+
+  # When the first notification was sent, wait 'group_interval' to send a batch
+  # of new alerts that started firing for that group.
+  group_interval: 30s
+
+  # If an alert has successfully been sent, wait 'repeat_interval' to
+  # resend them.
+  repeat_interval: 30m
+
+  # A default receiver
+  receiver: "telegram_bot"
+
+  # All the above attributes are inherited by all child routes and can
+  # overwritten on each.
+  routes:
+    - receiver: "telegram_bot"
+      group_wait: 10s
+      match_re:
+        severity: critical|warning
+      continue: true
+
+    - receiver: "pager"
+      group_wait: 10s
+      match_re:
+        severity: critical
+      continue: true
+
+
+receivers:
+  - name: 'telegram_bot'
+    telegram_configs:
+      - bot_token: '*****'
+      api_url: 'https://api.telegram.org'
+      chat_id: ******
+      parse_mode: 'HTML'
+
+  - name: "slack"
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/xxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        send_resolved: true
+        channel: 'monitoring'
+        text: "{{ range .Alerts }}<!channel> {{ .Annotations.summary }}\n{{ .Annotations.description }}\n{{ end }}"
+
+  - name: "pager"
+    webhook_configs:
+      - url: http://192.168.1.1:8080/send/sms
+        send_resolved: true
+
+  - name: 'email'
+    email_configs:
+      - to: 'recipient@gmail.com'
+      from: 'email_id@gmail.com'
+      smarthost: smtp.gmail.com:587
+      auth_username: 'email_id@gmail.com'
+      auth_identity: 'email_id@gmail.com'
+      auth_password: 'password'
+
+
